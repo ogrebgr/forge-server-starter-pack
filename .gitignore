@@ -1,0 +1,17 @@
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+.idea
+logs/*
+conf/*
+uploads/*
+version.properties
+/src/main/static/public/version.txt
+/src/main/resources/templates/modules/admin/version.vm
+
+*.iws
+*.iml
+*.ipr
+out/
