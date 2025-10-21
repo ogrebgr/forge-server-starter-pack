@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My site |
+        #if ($_subdir)
+        #parse("${_subdir}/${_page}/${_page}_title.vm")
+        #else
+        #parse("${_page}/${_page}_title.vm")
+        #end
+    </title>
+</head>
+    <body>
+        <div style="text-align: center; display: flex; justify-content: center; flex-direction: column;">
+            <div style="text-align: center; display: flex; justify-content: center; flex-direction: column;">
+                <div>
+                    #if ($_subdir)
+                    #parse("${_subdir}/${_page}/${_page}.vm")
+                    #else
+                    #parse("${_page}/${_page}.vm")
+                    #end
+                </div>
+            </div>
+            <div><a href="/">Back to the site</a></div>
+        </div>
+    </body>
+</html>

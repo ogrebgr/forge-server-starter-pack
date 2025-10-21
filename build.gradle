@@ -1,15 +1,62 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '2.2.20'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.23'
+    id 'application'
+    id 'idea'
+    id "org.jetbrains.kotlin.kapt" version "1.9.23"
 }
 
-group = 'org.forge-server.starter-pack'
-version = '1.0-SNAPSHOT'
+
+group = 'org.forge_server.starter_pack'
+def versionPropsFile = file('version.properties')
+
+/**
+ * Version update start
+ * The code bellow reads the version from version.properties file, increments it and
+ * sets the `version` variable to include the value plus current timestamp
+ */
+def versionCode
+if (versionPropsFile.canRead()) {
+    Properties versionProps = new Properties()
+
+    versionProps.load(new FileInputStream(versionPropsFile))
+
+    versionCode = versionProps['VERSION_CODE'].toInteger() + 1
+
+    versionProps['VERSION_CODE'] = versionCode.toString()
+    versionProps.store(versionPropsFile.newWriter(), null)
+} else {
+    throw new GradleException("Could not read version.properties!")
+}
+
+static def getDate() {
+    return new Date().format('yyyyMMddHHmm')
+}
+
+version 'v1.0-' + versionCode + '-' + getDate()
+/**
+ * Version update end
+ */
+
 
 repositories {
     mavenCentral()
+//    mavenLocal() // you may want to include the local maven repo if you use local libs
 }
 
+ext.daggerVersion = '2.56.2'
+
 dependencies {
+    implementation 'javax.inject:javax.inject:1'
+    implementation 'com.goterl:lazysodium-java:5.1.4'
+    implementation 'com.bolyartech.forge.server:forge-server-jetty:21.3.3'
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+    implementation 'ch.qos.logback:logback-classic:1.5.19'
+    implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.8'
+
+    testImplementation "io.mockk:mockk:1.14.6"
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 }
 
@@ -17,5 +64,40 @@ test {
     useJUnitPlatform()
 }
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 }
+
+application {
+    mainClassName = 'org.changeme.starterpack.ServerStarterKt'
+}
+
+// Use this task to show you the actual errors by temporary disabling kapt so the Intellij IDEA
+// or Android studio give you just "e: Could not load module <Error module>". It will be placed in the
+// group 'Help' as 'showTheGodDamnErrors'
+tasks.register('showTheGodDamnErrors') {
+    group = 'Help'
+    description = 'Shows you the actual errors when you had "e: Could not load module <Error module>"'
+    doFirst {
+        subprojects { subproject ->
+            subproject.tasks.whenTaskAdded {
+                if (it.name.contains("kapt")) {
+                    it.enabled = false
+                }
+            }
+        }
+
+        tasks.matching { it.name.contains("kapt") }.forEach { kaptTask ->
+            kaptTask.enabled = false
+            println("Disabled task: ${kaptTask.name}")
+        }
+    }
+
+    finalizedBy("compileJava", "compileKotlin")
+}
+
+task updateVersion() {
+    new File(projectDir, "/src/main/resources/templates/admin/version.vm").text = """Version: $version\n"""
+    new File(projectDir, "/src/main/resources/templates/main/version.vm").text = """Version: $version\n"""
+}
+
+build.dependsOn updateVersion

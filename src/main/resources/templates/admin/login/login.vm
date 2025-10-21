@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+    <title>Luck in master - Login</title>
+    <link rel="stylesheet" href="/admin/css/adminlte.min.css">
+    <link href="/admin/css/admin.css" rel="stylesheet">
+    <script src="/admin/plugins/jquery/jquery.min.js"></script>
+    <script src="/admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/admin/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/admin/img/favicon-16x16.png">
+</head>
+<body>
+<div class="container h-100 mt-5">
+    <div class="row g-0 h-100">
+        <div class="col h-100">
+            <div class="row justify-content-md-center g-0">
+                <div class="col col-md-3 ">
+                    <div class="mb-3">
+                        <img src="/admin/img/li_logo.png" alt="Luck in logo" class="mx-auto d-block">
+                    </div>
+                    <div class="text-center">
+                        <h1>Luck in Master</h1>
+                    </div>
+                    <div>
+                        #if ($invalid_login)
+                        <div class="alert alert-danger" role="alert">
+                            Invalid login. Try again.
+                        </div>
+                        #end
+                        <form action="/admin/login" method="post" class="mb-3">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input #if ($invalid_login)value="$username" #end name="username" placeholder="Enter Username"
+                                       requiredtype="text" type="text" id="username" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input name="password" placeholder="Enter Password" required type="password" id="password"
+                                       class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col col-md-3 p-1" style="font-size: small; background-color:
+    #if ($deployment == "development")
+                #eeeeee
+                #end
+                #if ($deployment == "testing")
+                grey
+                #end
+                #if ($deployment == "staging")
+                yellow
+                #end
+                #if ($deployment == "production")
+                red
+                #end
+                ;">
+                Environment: $deployment<br>
+                Server IP: $ip<br>
+                #parse("/templates/admin/version.vm" )
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -9,9 +9,10 @@ conf/*
 uploads/*
 version.properties
 /src/main/static/public/version.txt
-/src/main/resources/templates/modules/admin/version.vm
-
+/src/main/resources/templates/admin/version.vm
 *.iws
 *.iml
 *.ipr
 out/
+
+/src/main/resources/templates/main/version.vm

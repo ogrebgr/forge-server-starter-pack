@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forge server Starter Pack - #parse("${_page}/${_page}_title.vm" )</title>
+</head>
+<body>
+#parse("${_page}/${_page}.vm" )
+</body>
+</html>
